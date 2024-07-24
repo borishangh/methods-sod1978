@@ -12,7 +12,7 @@ l = sod_state.dt / sod_state.dx
 params = {
     "ACM" : True,
     "ACM_lambda" : 1, 
-    "Hybrid_switch": True,
+    "Hybrid_switch": False,
     "AV": False,
     "AV_nu": 1,
     "Rusanov_omega" : 1,
@@ -22,5 +22,5 @@ params = {
 # godunov_update, laxwendroff_update, maccormack_update,
 # rusanov_update, hybrid_update, hyman_update
 
-evolve(sod_state, t, hybrid_update, params)
-plot(sod_state, t, r"Hybrid Scheme with ACM $\hat{\lambda} = 1$ and Hybrid Switch")
+evolve(sod_state, t, rusanov_update, params)
+plot(sod_state, t, r"Rusanov Scheme with ACM $\hat{\lambda} = 1$ and Hybrid Switch")

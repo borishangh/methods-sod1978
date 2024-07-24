@@ -8,17 +8,13 @@ def ACM(state, l=1, switch=False):
     delta = shift(U, 1) - U
     S = np.sign(delta)
 
-    alpha = np.zeros((len(U)))
-
-    comp = np.array([
-            np.min(np.array([np.abs(delta)[..., i], 
-                             (shift(delta, -1) * np.sign(delta))[..., i]]).T,
-                axis=1,) for i in range(3)]).T
-
+    min_term = np.minimum(np.abs(delta), shift(delta, -1)*np.sign(delta))
     div = np.abs(delta) + np.abs(shift(delta, -1))
-    div[div == 0] = 1  # to not div by zero
-    
-    alpha = np.max(np.array([alpha, np.min(comp / div, axis=1)]).T, axis=1)
+    div[div == 0] = 1 # to not div by zero
+
+    min_kth = np.min(min_term/div, axis = 1)
+
+    alpha = np.maximum(np.zeros(min_kth.shape), min_kth)
 
     Delta = shift(U, 1) - shift(U, -1)
     g = (alpha).reshape((len(alpha), 1)) * Delta
