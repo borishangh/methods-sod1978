@@ -66,7 +66,7 @@ def exact(t, N, dx, gamma=1.4):
     return exact
 
 def plot(computed, t, heading, limits = False):
-    fig, axs = plt.subplots(2, 2, figsize=(8, 6))
+    fig, axs = plt.subplots(2, 2, figsize=(10, 7))
     fig.suptitle(heading, fontsize=12)
     y_labels = ['DENSITY', 'VELOCITY', 'PRESSURE', 'ENERGY']
 
@@ -80,7 +80,7 @@ def plot(computed, t, heading, limits = False):
     
     for i, ax in enumerate(axs.flat):
         ax.plot(x, y_exact.T[i], 'r')
-        ax.plot(x, y_comp[i], 'kx ')
+        ax.plot(x, y_comp[i], 'kx')
         ax.set_ylabel(y_labels[i])
         if limits:
             ax.set_ylim(ylim_values[i])

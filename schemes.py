@@ -3,7 +3,7 @@ from functools import wraps
 from helper import shift
 from state import State
 from artificial_viscocity import AV
-from artificial_compression import ACM
+from artificial_compression import ACM, theta_hybrid
 
 def update(func):
     @wraps(func)
@@ -64,20 +64,6 @@ def rusanov_update(state, params):
         + 0.25 * (shift(alpha, 1) + alpha) * (shift(U, 1) - U) 
         - 0.25 * (alpha + shift(alpha, -1))*(U - shift(U, -1))
     )
-
-def theta_hybrid(rho):
-    Delta = shift(rho, 1) - rho
-    Deltaplus, Deltaminus = np.abs(Delta), np.abs(shift(Delta, -1))
-    div = (Deltaplus + Deltaminus)
-    epsilon = (div > 1e-4)
-    div[div == 0] = 1
-    Deltaterm = np.abs((Deltaplus - Deltaminus) / div)
-
-    theta_int = Deltaterm * epsilon
-
-    theta = np.max(np.array([theta_int, shift(theta_int, 1)]).T, axis = 1)
-    theta = theta.reshape((len(theta), 1))
-    return theta    
 
 @update
 def hybrid_update(state, params):

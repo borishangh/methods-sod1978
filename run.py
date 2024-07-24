@@ -7,11 +7,12 @@ N, t = 100, 0.2
 sod_init = [[1.0, 0.0, 1.0 / 0.4]] * (N // 2) + [[0.125, 0.0, 0.1 / 0.4]] * (N // 2)
 
 sod_state = State(sod_init)
+l = sod_state.dt / sod_state.dx
 
 params = {
-    "ACM" : False,
-    "ACM_lambda" : sod_state.dt/sod_state.dx, 
-    "Hybrid_switch": False,
+    "ACM" : True,
+    "ACM_lambda" : 1, 
+    "Hybrid_switch": True,
     "AV": False,
     "AV_nu": 1,
     "Rusanov_omega" : 1,
@@ -21,5 +22,5 @@ params = {
 # godunov_update, laxwendroff_update, maccormack_update,
 # rusanov_update, hybrid_update, hyman_update
 
-evolve(sod_state, t, antidiffusion_update, params)
-plot(sod_state, t, r"Antidiffusion Method")
+evolve(sod_state, t, hybrid_update, params)
+plot(sod_state, t, r"Hybrid Scheme with ACM $\hat{\lambda} = 1$ and Hybrid Switch")

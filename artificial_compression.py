@@ -31,3 +31,17 @@ def ACM(state, l=1, switch=False):
         new_state = State(U - 0.5 * l * (G - shift(G, -1)))
 
     state.data = new_state.data
+
+def theta_hybrid(rho):
+    Delta = shift(rho, 1) - rho
+    Deltaplus, Deltaminus = np.abs(Delta), np.abs(shift(Delta, -1))
+    div = (Deltaplus + Deltaminus)
+    epsilon = (div > 1e-4)
+    div[div == 0] = 1
+    Deltaterm = np.abs((Deltaplus - Deltaminus) / div)
+
+    theta_int = Deltaterm * epsilon
+
+    theta = np.max(np.array([theta_int, shift(theta_int, 1)]).T, axis = 1)
+    theta = theta.reshape((len(theta), 1))
+    return theta  
