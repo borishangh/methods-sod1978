@@ -29,3 +29,14 @@ class State:
             self.m() ** 2 / self.rho() + self.P(),
             (self.m() / self.rho()) * (self.E() + self.P())
         ]).T
+    
+    def f_x(self):
+        j = lambda x : np.array([
+            [0, 1, 0],
+            [(3- self.gamma)*(x[1]/x[0]), 
+             0.5 * (self.gamma - 3) * (x[1]/x[0]) ** 2, 
+             self.gamma - 1], 
+            [self.gamma*x[2] / x[0] - 1.5 * (self.gamma - 1) * (x[1]/x[0])**2, 
+             - self.gamma * x[1] * x[2] / x[0]**2 + (self.gamma - 1)*(x[1]/x[0])** 3, 
+             self.gamma*(x[1]/x[0])]])
+        return np.apply_along_axis(j , 1, self.data)

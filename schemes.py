@@ -3,6 +3,7 @@ from functools import wraps
 from helper import shift
 from state import State
 from artificial_viscocity import AV
+import numpy.linalg as LA
 from artificial_compression import ACM, theta_hybrid
 
 def update(func):
@@ -31,7 +32,7 @@ def godunov_update(state, params):
     Fbar = temp_state.flux().copy()
 
     state.data = U_n - l * (Fbar - shift(Fbar, -1))
-
+    
 @update
 def laxwendroff_update(state, params):
     U_n, F_n, l = state.data.copy(), state.flux().copy(), state.dt / state.dx
@@ -55,6 +56,7 @@ def maccormack_update(state, params):
 @update
 def rusanov_update(state, params):
     U, F, l = state.data.copy(), state.flux().copy(), state.dt / state.dx
+    dx = state.dx
     omega = 1 or params["Rusanov_omega"]
 
     alpha = np.array(omega * l * (state.u() + state.c())).reshape(len(U), 1)
@@ -91,6 +93,10 @@ def hyman_update(state, params):
 
     alpha = (u + c).reshape((len(u), 1))
     phi = 0.25 * (shift(alpha, 1) + alpha) * (shift(U_n, 1) - U_n) / dx
+    if params["Hyman_switch"]: 
+        beta = np.where(shift(alpha, 1) > alpha + dx/3, 1/3, 1)
+        phi *= beta
+    
     P = D(F_n ) - delta * (phi - shift(phi, -1))
 
     temp_state = State(U_n - dt * P)
